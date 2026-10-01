@@ -1,0 +1,3 @@
+#!/bin/sh
+# AirPods Max sidetone CLI: runs sidetone.py from the directory this shim lives in.
+exec /usr/bin/python3 "$(dirname "$(readlink -f "$0")")/sidetone.py" "$@"

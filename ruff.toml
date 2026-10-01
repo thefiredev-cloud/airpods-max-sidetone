@@ -1,0 +1,13 @@
+# Lint policy for this repo, pinned in-tree on purpose.
+#
+# .github/workflows/ci.yml installs ruff unpinned and runs `ruff check .`. With no
+# config file, that command uses whatever the newest ruff defaults to, so the CI
+# gate drifts with every ruff release — 0.16 alone turned it red with 49 findings
+# that are style preferences (percent-format, blind except, subprocess check),
+# not defects. Declaring the rule set here makes the gate deterministic.
+#
+# Scope is the classic ruff default: real errors and unused imports/names.
+# Raising the bar (UP, BLE, S, SIM, PIE, PLW) is a deliberate follow-up that
+# needs the sidetone supervisor refactored, not a drive-by edit.
+[lint]
+select = ["E4", "E7", "E9", "F"]

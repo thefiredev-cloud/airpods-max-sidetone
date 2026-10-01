@@ -1,0 +1,17 @@
+[Unit]
+Description=AirPods Max sidetone supervisor (gated quiet pw-loopback, -18 dB cap)
+After=pipewire.service wireplumber.service
+
+[Service]
+Type=simple
+Environment=PYTHONUNBUFFERED=1
+# Set your headset's Bluetooth address (bluetoothctl devices) and the clone path.
+Environment=SIDETONE_BT_ADDR=AA:BB:CC:DD:EE:FF
+ExecStart=/usr/bin/python3 @REPO@/sidetone.py supervise
+ExecStopPost=/bin/sh -c 'pkill -f "[p]w-loopback -n airpods-sidetone" || true'
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=8
+
+[Install]
+WantedBy=default.target
