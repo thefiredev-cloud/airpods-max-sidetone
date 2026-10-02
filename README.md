@@ -1,25 +1,32 @@
-# airpods-sidetone
+# airpods-max-sidetone
 
-## What it is
+[![CI](https://github.com/thefiredev-cloud/airpods-max-sidetone/actions/workflows/ci.yml/badge.svg)](https://github.com/thefiredev-cloud/airpods-max-sidetone/actions/workflows/ci.yml)
 
-A Python 3 stdlib supervisor that runs a volume-clamped PipeWire `pw-loopback` sidetone path for AirPods Max on Linux, only while another real capture client is using the headset mic.
+A small Python supervisor that gives AirPods Max sidetone (hearing your own voice) on Linux. It runs a volume-capped PipeWire `pw-loopback` from the headset mic to the headset, and only while another app is actually capturing the mic.
 
 ## Why it exists
 
-Linux AirPods Max have no native sidetone. An always-on loopback either stays silent, routes to the wrong nodes, or gets too loud; this process gates the loopback and clamps gain.
+AirPods Max have no sidetone on Linux. A plain always-on loopback either stays silent, links to the wrong devices, or gets too loud. This tool gates the loopback on real mic use and clamps the gain.
 
-## How to run it
+## Requirements
 
-Runtime: Python 3, system PipeWire (`/usr/bin/pw-loopback`, `pw-link`, `pw-cli`, `pw-dump`, `pactl`). No PyPI deps.
+- Linux with PipeWire and BlueZ
+- Python 3 (standard library only; CI uses 3.11)
+- PipeWire tools on `PATH`: `pw-loopback`, `pw-link`, `pw-cli`, `pw-dump`, `pactl`
+- A systemd user session, for the supervised service
 
-Set your headset's Bluetooth address first. Find it with `bluetoothctl devices`.
+## Install
+
+Find your headset's Bluetooth address with `bluetoothctl devices`, then:
 
 ```bash
+git clone https://github.com/thefiredev-cloud/airpods-max-sidetone.git
+cd airpods-max-sidetone
 export SIDETONE_BT_ADDR=AA:BB:CC:DD:EE:FF   # your AirPods Max
 python3 sidetone.py status
 ```
 
-Install the user service once. Edit the address in the unit, then:
+Install the user service once, then set the address in the unit:
 
 ```bash
 mkdir -p ~/.config/systemd/user
@@ -28,41 +35,51 @@ $EDITOR ~/.config/systemd/user/airpods-sidetone.service   # set SIDETONE_BT_ADDR
 systemctl --user daemon-reload
 ```
 
-Then, on a box where the AirPods Max BlueZ nodes exist:
+## Usage
 
 ```bash
-python3 sidetone.py on
-python3 sidetone.py status
+python3 sidetone.py on        # enable the user service and start supervision
+python3 sidetone.py status    # add --json for machine-readable output
+python3 sidetone.py level 0.05
 python3 sidetone.py off
 ```
 
-Commands: `on` | `off` | `status [--json]` | `level <0.02..0.125>` | `supervise`.
+| Command | Effect |
+|---|---|
+| `on` | Enables and starts `airpods-sidetone.service`; the gate then controls the loopback |
+| `off` | Stops and disables the service and cleans up the loopback |
+| `status [--json]` | Shows the service state, gate decision, routing, and gain readback |
+| `level <0.02..0.125>` | Sets the loopback amplitude; `0.125` is about -18 dB (`channelmix.max-volume`) |
+| `supervise` | The loop the service runs |
 
-`on` enables the user unit `airpods-sidetone.service` and starts supervision. `supervise` is the loop that unit runs. Gain is clamped to amplitude `0.02`–`0.125` (`0.125` = −18.06 dB via `channelmix.max-volume`).
+The `./sidetone` shim runs `sidetone.py` from its own directory.
 
-The `./sidetone` shim runs `sidetone.py` from the directory it lives in.
+## How the gate works
 
-The BlueZ node names are built from `SIDETONE_BT_ADDR` (`bluez_input.<ADDR>` and `bluez_output.<ADDR with underscores>.1`). There is no fallback route to speakers or other mics. The state file `state/state.json` is created on first use and is not tracked.
+The loopback runs only when all of these hold: the headset source exists and is unmuted, the headset sink exists, and at least one other real capture client is using the mic. Links are made by hand with `pw-link` and `node.autoconnect=false`, so audio never falls back to speakers or another mic.
 
-## In scope / out of scope
+Node names come from `SIDETONE_BT_ADDR`: `bluez_input.<ADDR>` and `bluez_output.<ADDR with underscores>.1`. The level is stored in `state/state.json`, created on first use and ignored by git.
 
-In scope:
+## Tests
 
-- Gate: source present and unmuted, sink present, at least one other real capture client.
-- Manual `pw-link` with `node.autoconnect=false`.
-- User systemd enable/disable of `airpods-sidetone.service`.
-- Bounded level writes under `state/state.json`.
+```bash
+pip install pytest ruff
+ruff check .
+pytest -v
+```
 
-Out of scope:
+CI runs the same checks on pushes and pull requests to `main`. The tests cover the gate logic and do not need a headset.
 
-- Network, telemetry, or non-stdlib Python.
-- Generic Bluetooth headsets (the node names and the one-headset gate are written for an AirPods Max pair; other headsets are untested).
-- Forcing HFP when nothing is capturing.
+## Scope
 
-## Current production URL
+In scope: one AirPods Max pair, gated loopback, bounded level, user systemd control.
 
-Not deployed.
+Out of scope: network access, telemetry, third-party Python packages, other Bluetooth headsets (untested), and forcing the HFP profile when nothing is capturing.
 
 ## Status
 
-live
+Working. Not packaged.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
