@@ -4,13 +4,17 @@
 
 A small Python supervisor that gives AirPods Max sidetone (hearing your own voice while you talk) on Linux with PipeWire. It is for people who use AirPods Max as a Bluetooth headset on a desktop and want a quiet mic-to-ear loopback that only runs during calls or recordings.
 
+Status: a single-file utility with no dependencies beyond the standard library. The gate logic has unit tests. Live PipeWire routing, gain enforcement and the systemd unit have no automated tests.
+
+It does not switch Bluetooth profiles, change default devices, route to any speaker other than the headset, or touch the network.
+
 ## What it does
 
 The script `sidetone.py` runs a PipeWire `pw-loopback` from the headset microphone to the headset speakers. It keeps that loopback alive only while another application is actually capturing from the headset mic, and it caps the loopback gain at 0.125 amplitude (about -18 dB).
 
 ### The sidetone loop
 
-1. The supervisor wakes every 2 seconds and takes a read-only snapshot of PipeWire through `pactl`: the headset source, the headset sink, and every active capture stream.
+1. The supervisor sleeps 2 seconds between cycles. Each cycle it takes a read-only snapshot of PipeWire through `pactl`: the headset source, the headset sink, and every active capture stream.
 2. A pure gate function decides whether the loopback should run. It runs only when all of these hold:
    - the headset source exists and is not muted,
    - the headset sink exists,
@@ -27,7 +31,7 @@ The gate does not count these as capture clients: the loopback's own streams, pa
 
 - **Gate first, fail closed.** If the snapshot fails, the loopback is stopped and the loop tries again on the next cycle.
 - **Every cycle re-checks the running loopback.** It reads the playback volume and reapplies the saved level if the reading is above the cap. If the cap cannot be enforced, it stops the loopback. It also verifies that the link set is exactly the two links above. Any extra link or missing link stops the loopback so it restarts from scratch.
-- **Start-up failures clean up.** If `pw-loopback` exits early, the nodes do not appear within 5 seconds, the gain readback is too high, or `pw-link` fails, the supervisor tears down everything it created.
+- **Start-up failures clean up.** If `pw-loopback` exits early, the nodes do not appear within 5 seconds, the gain readback is too high, `pw-link` fails, or the link check fails, the supervisor stops `pw-loopback` and removes the sidetone nodes.
 - **Signals are handled.** SIGTERM and SIGINT end the loop and clean up the loopback before exit.
 - **systemd keeps the supervisor running.** The user unit in `systemd/airpods-sidetone.service` uses `Restart=on-failure` with a 2 second delay. `ExecStopPost` also kills any leftover `pw-loopback -n airpods-sidetone` process.
 
@@ -37,7 +41,7 @@ The gate does not count these as capture clients: the loopback's own streams, pa
 - Python 3 with the standard library only. CI uses 3.11.
 - These tools at the exact paths hard-coded in `sidetone.py`: `/usr/bin/pw-loopback`, `/usr/bin/pw-link`, `/usr/bin/pw-cli`, `/usr/bin/pw-dump`, `/usr/bin/pactl`.
 - `/usr/bin/python3`, which both the `./sidetone` shim and the systemd unit call.
-- A systemd user session with `systemctl --user`. The `off` command also calls `pgrep`.
+- A systemd user session with `systemctl --user`. The `off` command also calls `pgrep`, and the unit's `ExecStopPost` uses `pkill`.
 - The headset must be connected, and the profile it is using must expose a microphone source. The gate stays closed when the source is missing.
 
 ## Quick start
@@ -68,7 +72,7 @@ Then turn supervision on:
 python3 sidetone.py on
 ```
 
-`on` writes the state file if needed, enables and starts the user service, waits a moment, and prints status. Keep `SIDETONE_BT_ADDR` exported in the shell you use for the other commands, because the CLI reads it too.
+`on` writes the state file if needed, enables and starts the user service, waits a moment, and prints status. It does not check whether the unit file is installed, so confirm `service:` in the output shows `active`. Keep `SIDETONE_BT_ADDR` exported in the shell you use for the other commands, because the CLI reads it too.
 
 ## Usage
 
@@ -121,9 +125,9 @@ pytest -v
 
 `python3 tests/test_gate.py` also works without pytest installed. CI runs `ruff check .` and `pytest -v` on Python 3.11.
 
-The 8 tests cover the pure gate decision only. They need no headset and no PipeWire. Live routing, gain enforcement, and the systemd unit have not been covered by automated tests. Check those on your own machine with `status`.
+The 8 tests cover the pure gate decision only. They need no headset and no PipeWire. Check live routing on your own machine with `status`.
 
-Only AirPods Max are intended. Other Bluetooth headsets are untested. The tool does not use the network, send telemetry, or depend on third-party Python packages.
+Only AirPods Max are intended. Other Bluetooth headsets are untested. The tool uses no third-party Python packages.
 
 ## License
 
