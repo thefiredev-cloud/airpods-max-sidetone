@@ -139,6 +139,6 @@ Only AirPods Max are intended. Other Bluetooth headsets are untested. The tool u
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Copyright 2026 The Fire Dev LLC.
+MIT. See [LICENSE](LICENSE). Copyright 2026 thefiredev-cloud.
 
 Questions and bug reports: [GitHub issues](https://github.com/thefiredev-cloud/airpods-max-sidetone/issues).
