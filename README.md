@@ -57,7 +57,13 @@ python3 sidetone.py status
 
 `status` only reads state. It prints the service state, the gate decision, the routing check, and the gain readback.
 
-Install the user service once. The unit file contains the placeholders `@REPO@` and `AA:BB:CC:DD:EE:FF`:
+Install the user service once. `install.sh` fills in the clone path and your headset address (the unit template keeps the placeholders `@REPO@` and `AA:BB:CC:DD:EE:FF`) and reloads the user manager:
+
+```bash
+./install.sh
+```
+
+To do the same by hand:
 
 ```bash
 mkdir -p ~/.config/systemd/user
@@ -109,6 +115,8 @@ The cap (0.125, about -18.06 dB), the minimum level (0.02), the 2 second check i
 ```text
 sidetone.py                          supervisor, gate, routing check, CLI
 sidetone                             shell shim that runs sidetone.py
+install.sh                           write the user unit for this clone and reload systemd
+uninstall.sh                         stop the service and remove that unit
 systemd/airpods-sidetone.service     user unit template
 tests/test_gate.py                   gate tests (no PipeWire needed)
 ruff.toml                            lint rules
@@ -131,4 +139,6 @@ Only AirPods Max are intended. Other Bluetooth headsets are untested. The tool u
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). Copyright 2026 The Fire Dev LLC.
+
+Questions and bug reports: [GitHub issues](https://github.com/thefiredev-cloud/airpods-max-sidetone/issues).
