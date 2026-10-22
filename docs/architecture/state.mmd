@@ -1,0 +1,7 @@
+stateDiagram-v2
+  direction LR
+  [*] --> Stopped
+  Stopped --> Running: gate opens, start and link succeed
+  Running --> Stopped: gate closes, snapshot fails, gain above cap or link set wrong
+  Running --> [*]: SIGTERM or SIGINT, cleaned up
+  Stopped --> [*]: SIGTERM or SIGINT

@@ -1,0 +1,100 @@
+{
+ "repo": "airpods-max-sidetone",
+ "files_tracked": 12,
+ "head": "92c8a6d03d07b0bdab9946ecc9762470689f0c38",
+ "origin": "https://github.com/thefiredev-cloud/airpods-max-sidetone.git",
+ "default_branch": "main",
+ "languages": [
+  [
+   ".md",
+   2
+  ],
+  [
+   ".sh",
+   2
+  ],
+  [
+   ".py",
+   2
+  ],
+  [
+   ".yml",
+   1
+  ],
+  [
+   ".toml",
+   1
+  ],
+  [
+   ".service",
+   1
+  ]
+ ],
+ "readme": "README.md",
+ "readme_first_paragraph": "A small Python supervisor that gives AirPods Max sidetone (hearing your own voice while you talk) on Linux with PipeWire. It is for people who use AirPods Max as a Bluetooth headset on a desktop and want a quiet mic-to-ear loopback that only runs during calls or recordings.",
+ "top_dirs": [
+  ".github",
+  "systemd",
+  "tests"
+ ],
+ "manifests": [],
+ "libs": [],
+ "entry_points": [
+  {
+   "kind": "python-script-main",
+   "count": 2,
+   "paths": [
+    "sidetone.py",
+    "tests/test_gate.py"
+   ]
+  }
+ ],
+ "services": [
+  {
+   "kind": "systemd-service",
+   "path": "systemd/airpods-sidetone.service",
+   "description": "AirPods Max sidetone supervisor (gated quiet pw-loopback, -18 dB cap)",
+   "exec": "/usr/bin/python3 @REPO@/sidetone.py supervise"
+  }
+ ],
+ "deploy_targets": [],
+ "ci_workflows": [
+  {
+   "path": ".github/workflows/ci.yml",
+   "name": "CI & DevSecOps",
+   "on": [
+    "push",
+    "pull_request"
+   ],
+   "jobs": [
+    "test"
+   ],
+   "deploy_hints": []
+  }
+ ],
+ "cron_and_timers": [],
+ "files_scanned": 7,
+ "external_hosts": [],
+ "env_var_names": [
+  {
+   "name": "SIDETONE_BT_ADDR",
+   "first": "sidetone.py"
+  }
+ ],
+ "ci_secret_names": [],
+ "data_store_signals": {
+  "json/yaml state file": [
+   "sidetone.py:295"
+  ]
+ },
+ "auth_signals": {
+  "Secrets from env or CI secrets": [
+   "sidetone.py:41"
+  ]
+ },
+ "tests": [
+  "tests",
+  "tests/test_gate.py"
+ ],
+ "docs_files": []
+}
