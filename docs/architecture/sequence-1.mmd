@@ -1,0 +1,20 @@
+sequenceDiagram
+  autonumber
+  participant sup as Supervisor
+  participant pactl as pactl / pw-dump
+  participant gate as Gate
+  participant lb as pw-loopback
+  participant link as pw-link
+  sup->>pactl: list sources, sinks, capture streams
+  pactl-->>sup: snapshot
+  sup->>gate: evaluate_gate(snapshot)
+  gate-->>sup: run = true (real capture client present)
+  alt no loopback yet
+    sup->>lb: start with autoconnect off
+    sup->>lb: set playback volume, read it back
+    Note over sup: readback above 0.125: stop and clean up
+    sup->>link: link exactly two ports
+  else loopback running
+    sup->>lb: reapply level if readback above cap
+    sup->>pactl: verify exactly two links
+  end

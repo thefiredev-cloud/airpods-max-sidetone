@@ -1,0 +1,18 @@
+flowchart LR
+  ci["GitHub Actions CI"]:::job
+  subgraph host_desk["Linux desktop (systemd user session)"]
+    unit["airpods-sidetone.service<br/>default.target, Restart=on-failure 2 s"]:::job
+    sup["sidetone.py supervise<br/>poll every 2 s"]:::app
+    lb["pw-loopback<br/>only while gate open"]:::job
+    pw{{"PipeWire + WirePlumber"}}:::ext
+    state[("state/state.json")]:::store
+  end
+  unit -->|"ExecStart"| sup
+  sup -->|"start / stop"| lb
+  lb -->|"two links"| pw
+  sup -->|"reads level"| state
+  ci -.->|"ruff + pytest"| sup
+  classDef app fill:#bfdbfe,stroke:#1d4ed8,color:#0b1220
+  classDef ext fill:#e5e7eb,stroke:#4b5563,color:#0b1220,stroke-dasharray:4 3
+  classDef job fill:#fbcfe8,stroke:#be185d,color:#0b1220
+  classDef store fill:#bbf7d0,stroke:#15803d,color:#0b1220

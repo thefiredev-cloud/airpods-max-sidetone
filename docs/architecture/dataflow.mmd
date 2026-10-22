@@ -1,0 +1,15 @@
+flowchart LR
+  pw{{"PipeWire graph<br/>pactl + pw-dump"}}:::ext
+  snap["Snapshot"]:::app
+  gate["Gate"]:::app
+  state[("state.json")]:::store
+  lb["pw-loopback"]:::job
+  pw -->|"read-only"| snap
+  snap -->|"dict"| gate
+  gate -->|"run or stop"| lb
+  state -->|"level"| lb
+  lb -.->|"mic to ear"| pw
+  classDef app fill:#bfdbfe,stroke:#1d4ed8,color:#0b1220
+  classDef ext fill:#e5e7eb,stroke:#4b5563,color:#0b1220,stroke-dasharray:4 3
+  classDef job fill:#fbcfe8,stroke:#be185d,color:#0b1220
+  classDef store fill:#bbf7d0,stroke:#15803d,color:#0b1220

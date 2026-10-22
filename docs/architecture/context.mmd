@@ -1,0 +1,16 @@
+flowchart LR
+  user(["Headset wearer"]):::actor
+  SYSTEM["airpods-max-sidetone<br/>the system in this repo"]:::app
+  pw{{"PipeWire + BlueZ"}}:::ext
+  callapp{{"Call / recording app"}}:::ext
+  systemd{{"systemd --user"}}:::ext
+  user -->|"on / off / level"| SYSTEM
+  SYSTEM -->|"enable --now"| systemd
+  systemd -->|"starts"| SYSTEM
+  SYSTEM -->|"pactl snapshot"| pw
+  callapp -->|"captures mic"| pw
+  SYSTEM -->|"mic to ear"| pw
+  pw -.->|"your voice"| user
+  classDef actor fill:#fde68a,stroke:#b45309,color:#111827
+  classDef app fill:#bfdbfe,stroke:#1d4ed8,color:#0b1220
+  classDef ext fill:#e5e7eb,stroke:#4b5563,color:#0b1220,stroke-dasharray:4 3

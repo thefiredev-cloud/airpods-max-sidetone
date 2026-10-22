@@ -137,6 +137,34 @@ The 8 tests cover the pure gate decision only. They need no headset and no PipeW
 
 Only AirPods Max are intended. Other Bluetooth headsets are untested. The tool uses no third-party Python packages.
 
+<!-- arch:begin -->
+## Architecture
+
+A systemd-supervised Python loop that gives AirPods Max sidetone on Linux PipeWire, only while another app is recording.
+
+```mermaid
+flowchart LR
+  user(["Headset wearer"]):::actor
+  cli["CLI<br/>on / off / level"]:::app
+  systemd["systemd user unit<br/>restarts on failure"]:::job
+  supervisor["Supervisor<br/>poll every 2 s + gate"]:::app
+  pw{{"PipeWire<br/>headset mic and speakers"}}:::ext
+  state[("state.json<br/>saved level")]:::store
+  user -->|"on / off"| cli
+  cli -->|"enable"| systemd
+  systemd -->|"keeps alive"| supervisor
+  supervisor -->|"loopback on/off"| pw
+  state -->|"level"| supervisor
+  classDef actor fill:#fde68a,stroke:#b45309,color:#111827
+  classDef app fill:#bfdbfe,stroke:#1d4ed8,color:#0b1220
+  classDef ext fill:#e5e7eb,stroke:#4b5563,color:#0b1220,stroke-dasharray:4 3
+  classDef job fill:#fbcfe8,stroke:#be185d,color:#0b1220
+  classDef store fill:#bbf7d0,stroke:#15803d,color:#0b1220
+```
+
+[Full architecture](docs/ARCHITECTURE.md) · Hi-res: [SVG](docs/architecture/whiteboard.svg) · [PNG 3x](docs/architecture/whiteboard@3x.png) · [dark PNG](docs/architecture/whiteboard.dark@3x.png) · [Explorable (Archify)](docs/architecture/airpods-max-sidetone.archify.html) · [Graphify report](docs/architecture/graphify/GRAPH_REPORT.md)
+<!-- arch:end -->
+
 ## License
 
 MIT. See [LICENSE](LICENSE). Copyright 2026 The Fire Dev LLC.

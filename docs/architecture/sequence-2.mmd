@@ -1,0 +1,13 @@
+sequenceDiagram
+  autonumber
+  actor user as User
+  participant cli as sidetone.py
+  participant state as state.json
+  participant sd as systemd --user
+  participant sup as Supervisor
+  user->>cli: python3 sidetone.py on
+  Note over cli: SIDETONE_BT_ADDR must be a real address
+  cli->>state: ensure state file exists
+  cli->>sd: systemctl --user enable --now
+  sd->>sup: ExecStart sidetone.py supervise
+  cli-->>user: status: service, gate decision, routing, gain readback
