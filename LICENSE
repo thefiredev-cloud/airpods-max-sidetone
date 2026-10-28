@@ -1,21 +1,34 @@
-MIT License
+Copyright (c) 2026 The Fire Dev LLC. All rights reserved.
 
-Copyright (c) 2026 The Fire Dev LLC
+PROPRIETARY AND CONFIDENTIAL
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software and its source code, documentation, designs, assets and
+associated materials (the "Work") are the exclusive property of The Fire
+Dev LLC and are protected by United States and international copyright
+law and by trade secret law.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+No license, express or implied, is granted except as follows:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+1. Internal use. The Work may be used, executed and modified by The Fire
+   Dev LLC and its authorized personnel, contractors and agents.
+
+2. No redistribution. No part of the Work may be copied, published,
+   distributed, sublicensed or made available to any third party without
+   the prior written consent of The Fire Dev LLC.
+
+3. No derivative works outside the company. Modifications made outside
+   The Fire Dev LLC require prior written consent.
+
+4. Contributions. Any contribution intentionally submitted for inclusion
+   in the Work shall be licensed to The Fire Dev LLC under the terms of
+   the then-current contributor agreement, including a present assignment
+   of copyright.
+
+5. Third-party components. Components under separate open source licenses
+   remain governed by those licenses and are identified in NOTICE.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+For licensing inquiries: tanner@meshvault.ai
