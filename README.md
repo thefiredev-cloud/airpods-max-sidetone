@@ -167,6 +167,6 @@ flowchart LR
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Copyright 2026 The Fire Dev LLC.
+MIT. See [LICENSE](LICENSE). Copyright 2026 Tanner Osterkamp.
 
 Questions and bug reports: [GitHub issues](https://github.com/thefiredev-cloud/airpods-max-sidetone/issues).
