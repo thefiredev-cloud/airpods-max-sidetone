@@ -167,6 +167,6 @@ flowchart LR
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Copyright 2026 Tanner Osterkamp.
+Copyright 2026 Tanner Osterkamp. All rights reserved. See [LICENSE](LICENSE). Licensing questions and contact: [tanner@kodros.ai](mailto:tanner@kodros.ai).
 
 Questions and bug reports: [GitHub issues](https://github.com/thefiredev-cloud/airpods-max-sidetone/issues).
