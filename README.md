@@ -66,9 +66,9 @@ Install the user service once. `install.sh` fills in the clone path and your hea
 To do the same by hand:
 
 ```bash
-mkdir -p ~/.config/systemd/user
-sed "s|@REPO@|$PWD|" systemd/airpods-sidetone.service > ~/.config/systemd/user/airpods-sidetone.service
-$EDITOR ~/.config/systemd/user/airpods-sidetone.service   # set SIDETONE_BT_ADDR
+mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
+sed "s|@REPO@|$PWD|" systemd/airpods-sidetone.service > "${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/airpods-sidetone.service"
+$EDITOR "${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/airpods-sidetone.service"   # set SIDETONE_BT_ADDR
 systemctl --user daemon-reload
 ```
 
@@ -78,7 +78,7 @@ Then turn supervision on:
 python3 sidetone.py on
 ```
 
-`on` writes the state file if needed, enables and starts the user service, waits a moment, and prints status. It does not check whether the unit file is installed, so confirm `service:` in the output shows `active`. Keep `SIDETONE_BT_ADDR` exported in the shell you use for the other commands, because the CLI reads it too.
+`on` writes the state file if needed, enables and starts the user service, waits a moment, and prints status. It does not check whether the unit file is installed, so confirm `service:` in the output shows `active`. Keep `SIDETONE_BT_ADDR` exported for `on` and `supervise`, and for status checks that should target your headset. The CLI reads the variable directly.
 
 ## Usage
 
