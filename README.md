@@ -57,7 +57,7 @@ python3 sidetone.py status
 
 `status` only reads state. It prints the service state, the gate decision, the routing check, and the gain readback.
 
-Install the user service once. `install.sh` fills in the clone path and your headset address (the unit template keeps the placeholders `@REPO@` and `AA:BB:CC:DD:EE:FF`) and reloads the user manager:
+Install the user service once. `install.sh` fills in the clone path and your headset address (the unit template keeps the placeholders `@REPO@` and `AA:BB:CC:DD:EE:FF`) and reloads the user manager. It needs `SIDETONE_BT_ADDR` set to a real address, or it exits with status 2:
 
 ```bash
 ./install.sh
@@ -78,7 +78,7 @@ Then turn supervision on:
 python3 sidetone.py on
 ```
 
-`on` writes the state file if needed, enables and starts the user service, waits a moment, and prints status. It does not check whether the unit file is installed, so confirm `service:` in the output shows `active`. Keep `SIDETONE_BT_ADDR` exported for `on` and `supervise`, and for status checks that should target your headset. The CLI reads the variable directly.
+`on` writes the state file, enables and starts the user service, waits a moment, and prints status. It does not check whether the unit file is installed, so confirm `service:` in the output shows `active`. Keep `SIDETONE_BT_ADDR` exported for `on` and `supervise`, and for status checks that should target your headset. The CLI reads the variable directly.
 
 ## Usage
 
@@ -99,7 +99,9 @@ python3 sidetone.py off
 
 The `./sidetone` shim runs `sidetone.py` from the directory it lives in.
 
-`on`, `off`, `level` and `supervise` change live audio routing. `on` and `supervise` refuse to run until `SIDETONE_BT_ADDR` is set to a real address.
+`on`, `off` and `supervise` change live audio routing. `level` changes the gain of a running loopback. `on` and `supervise` refuse to run until `SIDETONE_BT_ADDR` is set to a real address.
+
+To remove the service, run `./uninstall.sh`. It disables and stops the unit, deletes the unit file, and kills any leftover loopback. The clone and `state/` stay in place.
 
 ## Configuration
 
