@@ -41,7 +41,8 @@ The gate does not count these as capture clients: the loopback's own streams, pa
 - Python 3 with the standard library only. CI uses 3.11.
 - These tools at the exact paths hard-coded in `sidetone.py`: `/usr/bin/pw-loopback`, `/usr/bin/pw-link`, `/usr/bin/pw-cli`, `/usr/bin/pw-dump`, `/usr/bin/pactl`.
 - `/usr/bin/python3`, which both the `./sidetone` shim and the systemd unit call.
-- A systemd user session with `systemctl --user`. The `off` command also calls `pgrep`, and the unit's `ExecStopPost` uses `pkill`.
+- A systemd user session with `systemctl --user`. The `off` command also calls `pgrep`, and the unit's `ExecStopPost` and `uninstall.sh` use `pkill`.
+- `bash` 4 or newer for `install.sh` and `uninstall.sh`, and `sed` for `install.sh`. `install.sh` uses `${addr^^}`, a bash 4 feature.
 - The headset must be connected, and the profile it is using must expose a microphone source. The gate stays closed when the source is missing.
 
 ## Quick start
@@ -123,6 +124,9 @@ systemd/airpods-sidetone.service     user unit template
 tests/test_gate.py                   gate tests (no PipeWire needed)
 ruff.toml                            lint rules
 .github/workflows/ci.yml             lint and test on push and pull request to main
+docs/ARCHITECTURE.md                 architecture write-up; diagram sources and renders in docs/architecture/
+AGENTS.md                            contributor guidelines for this repo
+LICENSE, NOTICE                      license terms
 ```
 
 ## Development
