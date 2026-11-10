@@ -42,7 +42,7 @@ The gate does not count these as capture clients: the loopback's own streams, pa
 - These tools at the exact paths hard-coded in `sidetone.py`: `/usr/bin/pw-loopback`, `/usr/bin/pw-link`, `/usr/bin/pw-cli`, `/usr/bin/pw-dump`, `/usr/bin/pactl`.
 - `/usr/bin/python3`, which both the `./sidetone` shim and the systemd unit call.
 - A systemd user session with `systemctl --user`. The `off` command also calls `pgrep`, and the unit's `ExecStopPost` and `uninstall.sh` use `pkill`.
-- `bash` 4 or newer for `install.sh` and `uninstall.sh`, and `sed` for `install.sh`. `install.sh` uses `${addr^^}`, a bash 4 feature.
+- `bash` 4 or newer for `install.sh`, which uses `${addr^^}`. `uninstall.sh` needs no bash 4 feature. `install.sh` also needs `sed`.
 - The headset must be connected, and the profile it is using must expose a microphone source. The gate stays closed when the source is missing.
 
 ## Quick start
