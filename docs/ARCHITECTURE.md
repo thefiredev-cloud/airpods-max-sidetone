@@ -233,7 +233,7 @@ Hi-res: [SVG](architecture/deployment.svg) · [PNG 3x](architecture/deployment@3
 | pactl or pw-dump snapshot fails | Sidetone stops; retried next cycle | log line `snapshot failed ... fail-closed`; `status` | [`sidetone.py#L324-L330`](../sidetone.py#L324-L330) |
 | Gain readback above 0.125 after reapplying | Loopback stopped | log `gain unenforceable -> stopped` | [`sidetone.py#L345-L355`](../sidetone.py#L345-L355) |
 | Extra or missing PipeWire link | Loopback stopped and restarted from scratch | log `routing drift -> stopping from scratch`; `status` routing check | [`sidetone.py#L356-L360`](../sidetone.py#L356-L360), [`sidetone.py#L171-L198`](../sidetone.py#L171-L198) |
-| Placeholder or malformed SIDETONE_BT_ADDR | Process exits at import | SystemExit message naming the variable | [`sidetone.py#L40-L43`](../sidetone.py#L40-L43), [`sidetone.py#L425-L427`](../sidetone.py#L425-L427) |
+| Malformed SIDETONE_BT_ADDR, or placeholder with `on` / `supervise` | Malformed: process exits at import. Placeholder: `on` and `supervise` exit; `status` still runs | SystemExit message naming the variable | [`sidetone.py#L40-L43`](../sidetone.py#L40-L43), [`sidetone.py#L425-L427`](../sidetone.py#L425-L427) |
 | Supervisor killed | systemd restarts it; stray pw-loopback killed on stop | `systemctl --user status airpods-sidetone` | [`systemd/airpods-sidetone.service#L11-L13`](../systemd/airpods-sidetone.service#L11-L13) |
 
 ## 9. State machine

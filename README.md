@@ -31,7 +31,7 @@ The gate does not count these as capture clients: the loopback's own streams, pa
 
 - **Gate first, fail closed.** If the snapshot fails, the loopback is stopped and the loop tries again on the next cycle.
 - **Every cycle re-checks the running loopback.** It reads the playback volume and reapplies the saved level if the reading is above the cap. If the cap cannot be enforced, it stops the loopback. It also verifies that the link set is exactly the two links above. Any extra link or missing link stops the loopback so it restarts from scratch.
-- **Start-up failures clean up.** If `pw-loopback` exits early, the nodes do not appear within 5 seconds, the gain readback is too high, `pw-link` fails, or the link check fails, the supervisor stops `pw-loopback` and removes the sidetone nodes.
+- **Start-up failures clean up.** If `pw-loopback` exits early, the start is abandoned and retried on the next cycle. If the nodes do not appear within 5 seconds, the gain readback is too high, `pw-link` fails, or the link check fails, the supervisor stops `pw-loopback` and removes the sidetone nodes.
 - **Signals are handled.** SIGTERM and SIGINT end the loop and clean up the loopback before exit.
 - **systemd keeps the supervisor running.** The user unit in `systemd/airpods-sidetone.service` uses `Restart=on-failure` with a 2 second delay. `ExecStopPost` also kills any leftover `pw-loopback -n airpods-sidetone` process.
 
